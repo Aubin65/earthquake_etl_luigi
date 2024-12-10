@@ -4,7 +4,7 @@ Ce fichier est utilisé pour mettre en place l'ETL grâce à Apache Luigi
 
 # Import des librairies nécessaires
 import luigi
-from ..target.mongotarget import MongoTarget
+from ..target.mongotarget import MongoCollectionTarget
 from ..target.buffer import Buffer
 import os
 from dotenv import load_dotenv
@@ -63,7 +63,7 @@ class ExtractEarthquakes(luigi.Task):
             return buffer.put(raw_data)
 
 
-class TransformEarthquakes(luigi.task):
+class TransformEarthquakes(luigi.Task):
     """Tâche de tranformation de la donnée"""
 
     def requires(self):
@@ -82,7 +82,7 @@ class TransformEarthquakes(luigi.task):
         own_position = (os.getenv("LAT_OWN_LOC"), os.getenv("LONG_OWN_LOC"))
 
         # Récupération des données brutes
-        raw_data = self.input().data
+        raw_data = self.input().get_data()
 
         # Initialisation de la nouvelle variable de stockage temporaire
         buffer = self.output()
@@ -115,7 +115,7 @@ class TransformEarthquakes(luigi.task):
             )
 
 
-class LoadEarthquakes(luigi.task):
+class LoadEarthquakes(luigi.Task):
     """Tâche de chargement de la donnée"""
 
     def requires(self):
@@ -129,13 +129,9 @@ class LoadEarthquakes(luigi.task):
         db = os.getenv("MONGO_DATABASE")
         collection = os.getenv("MONGO_COLLECTION")
 
-        return MongoTarget(mongo_client=pymongo.MongoClient(client), index=db, collection=collection)
+        return MongoCollectionTarget(mongo_client=pymongo.MongoClient(client), index=db, collection=collection)
 
     def run(self):
         """Fonction de chargement de l'ETL à partir des données transformées précédemment"""
 
-        # Itération sur chaque enregistrement
-        for record in self.input().data:
-
-            # Ecriture dans la base de données
-            self.output().write(record)
+        self.output().bulk_insert(self.input().get_data())
