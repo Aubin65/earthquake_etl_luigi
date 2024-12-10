@@ -57,10 +57,10 @@ class ExtractEarthquakes(luigi.Task):
         buffer = self.output()
 
         # Si on a de nouveaux enregistrements, on stocke le résultat de la requête dans notre Buffer
-        if len(raw_data["features"]) > 0:
-            return buffer.put(raw_data)
-        else:
+        if buffer.is_empty():
             raise ValueError("Validation échouée : aucun nouvel enregistrement n'a été détecté")
+        else:
+            return buffer.put(raw_data)
 
 
 class TransformEarthquakes(luigi.task):
@@ -82,7 +82,7 @@ class TransformEarthquakes(luigi.task):
         own_position = (os.getenv("LAT_OWN_LOC"), os.getenv("LONG_OWN_LOC"))
 
         # Récupération des données brutes
-        raw_data = self.input()
+        raw_data = self.input().data
 
         # Initialisation de la nouvelle variable de stockage temporaire
         buffer = self.output()
@@ -131,4 +131,7 @@ class LoadEarthquakes(luigi.task):
         return MongoTarget(mongo_client=pymongo.MongoClient(client), index=db, collection=collection)
 
     def run(self):
-        pass
+
+        for record in self.input().data:
+
+            self.output().write(record)
