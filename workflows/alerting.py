@@ -54,7 +54,7 @@ class ExtractClothestEarthquakes(luigi.Task):
             buffer.put(record)
 
 
-class TransformEarthquake(luigi.task):
+class TransformEarthquake(luigi.Task):
     """Tâche de tranformation de la donnée"""
 
     def requires(self):
@@ -69,7 +69,7 @@ class TransformEarthquake(luigi.task):
         pass
 
 
-class LoadEarthquake(luigi.task):
+class LoadEarthquake(luigi.Task):
     """Tâche de chargement de la donnée"""
 
     def requires(self):

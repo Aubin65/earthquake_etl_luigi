@@ -12,6 +12,10 @@ class Buffer(Target):
         """Initialisation de la liste de dictionnaires"""
         self.data = []
 
+    def get_data(self):
+        """Renvoie les données du buffer"""
+        return self.data
+
     def is_empty(self):
         """Test sur la présence d'enregistrements dans le buffer"""
         return self.data == []
