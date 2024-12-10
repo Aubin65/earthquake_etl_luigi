@@ -1,6 +1,7 @@
 """
 Script d'import de la target MongoDB récupérée sur le site officiel : https://luigi.readthedocs.io/en/stable/_modules/luigi/contrib/mongodb.html#MongoTarget
 Doc : https://luigi.readthedocs.io/en/stable/api/luigi.contrib.mongodb.html#luigi.contrib.mongodb.MongoTarget
+Ce fichier n'est pas utilisé en lui même car on peut directement importer ces classes mais il aide à la compréhension de l'outil
 """
 
 # -*- coding: utf-8 -*-
