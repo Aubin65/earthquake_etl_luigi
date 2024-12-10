@@ -1,7 +1,7 @@
 """
 Script d'import de la target MongoDB récupérée sur le site officiel : https://luigi.readthedocs.io/en/stable/_modules/luigi/contrib/mongodb.html#MongoTarget
 Doc : https://luigi.readthedocs.io/en/stable/api/luigi.contrib.mongodb.html#luigi.contrib.mongodb.MongoTarget
-Ce fichier n'est pas utilisé en lui même car on peut directement importer ces classes mais il aide à la compréhension de l'outil
+La méthode bulk_insert() a été ajoutée à la classe MongoCollectionTarget car sinon une insertion nécessitait des IDs de documents
 """
 
 # -*- coding: utf-8 -*-
@@ -179,6 +179,16 @@ class MongoCollectionTarget(MongoTarget):
         Return if the target collection exists in the database
         """
         return self._collection in self.get_index().collection_names()
+
+    def bulk_insert(self, documents):
+        """Bulk insertion des documents dans la variable documents"""
+
+        # Test sur la présence ou non de documents dans la liste fournie
+        if not documents:
+            raise ValueError("Aucun document n'a été fourni.")
+
+        # Insertion des documents le cas échéant
+        return self.get_collection().insert_many(documents)
 
 
 class MongoCountTarget(MongoTarget):
