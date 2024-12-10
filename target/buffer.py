@@ -19,7 +19,3 @@ class Buffer(Target):
     def put(self, dictionnary):
         """Chargement de données dans le buffer"""
         self.data.append(dictionnary)
-
-    def clear(self):
-        """Purge des données du Buffer"""
-        self.data = []
