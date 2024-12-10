@@ -123,6 +123,7 @@ class LoadEarthquakes(luigi.task):
         return TransformEarthquakes()
 
     def output(self):
+        """Check de la sortie de l'ETL"""
 
         client = os.getenv("MONGO_CLIENT")
         db = os.getenv("MONGO_DATABASE")
@@ -131,7 +132,10 @@ class LoadEarthquakes(luigi.task):
         return MongoTarget(mongo_client=pymongo.MongoClient(client), index=db, collection=collection)
 
     def run(self):
+        """Fonction de chargement de l'ETL à partir des données transformées précédemment"""
 
+        # Itération sur chaque enregistrement
         for record in self.input().data:
 
+            # Ecriture dans la base de données
             self.output().write(record)
