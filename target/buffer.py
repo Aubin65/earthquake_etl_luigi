@@ -9,18 +9,13 @@ class Buffer(Target):
     """Target for a temporary resource"""
 
     def __init__(self):
-        """Initialisation"""
-        self.data = {}
+        """Initialisation de la liste de dictionnaires"""
+        self.data = []
 
     def is_empty(self):
-        return self.data == {}
+        """Test sur la présence d'enregistrements dans le buffer"""
+        return self.data == []
 
-    def put(self, key, value):
-        self[key] = value
-
-    def get(self, key):
-
-        if self.data[key]:
-            return self.data[key]
-        else:
-            return None
+    def put(self, dictionnary):
+        """Chargement de données dans le buffer"""
+        self.data.append(dictionnary)
