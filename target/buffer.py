@@ -6,7 +6,7 @@ from luigi.target import Target
 
 
 class Buffer(Target):
-    """Target for a temporary resource"""
+    """Target pour une liste temporaire"""
 
     def __init__(self):
         """Initialisation de la liste de dictionnaires"""
