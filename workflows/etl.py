@@ -3,6 +3,8 @@ Ce fichier est utilisé pour mettre en place l'ETL grâce à Apache Luigi
 """
 
 import luigi
+from ..target.mongotarget import MongoTarget
+import pymongo
 import requests  # noqa
 
 
@@ -40,7 +42,11 @@ class LoadEarthquake(luigi.task):
         return TransformEarthquake()
 
     def output(self):
-        return luigi.LocalTarget("chemin")
+        return MongoTarget(
+            mongo_client=pymongo.MongoClient("mongodb://localhost:27017/"),
+            index="earthquake_db",
+            collection="earthquakes",
+        )
 
     def run(self):
         pass
