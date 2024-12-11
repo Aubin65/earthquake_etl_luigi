@@ -28,3 +28,5 @@ On a :
 * Une méthode ```output``` qui va définir la destination de la donnée
 * Une méthode ```run``` qui va définir les transformations et plus généralement les actions de la tâche
 * Une méthode ```requires``` qui va contenir la classe correspondant à la tâche précédante
+
+Pour la méthode ```output```, on utilise des *Targets* prédéfinies dans le dossier [target](https://github.com/Aubin65/earthquake_etl_luigi/tree/main/target).
