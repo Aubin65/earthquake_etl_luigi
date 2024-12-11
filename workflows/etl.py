@@ -146,5 +146,6 @@ class LoadEarthquakes(luigi.Task):
         self.output().bulk_insert(self.input().get_data())
 
 
+# Lancement de la pipeline
 if __name__ == "__main__":
     luigi.run()
