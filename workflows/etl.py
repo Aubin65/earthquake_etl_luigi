@@ -32,17 +32,14 @@ class ExtractEarthquakes(luigi.Task):
         load_dotenv()
 
         # Récupération du client
-        # client = MongoClient(os.getenv("MONGO_CLIENT"))
-        client = MongoClient("mongodb://localhost:27017/")
+        client = MongoClient(os.getenv("MONGO_CLIENT"))
 
         # Récupération de la bdd
-        # db_name = os.getenv("MONGO_DATABASE")
-        db_name = "earthquake_db"
+        db_name = os.getenv("MONGO_DATABASE")
         db = client[db_name]
 
         # Récupération de la collection
-        # collection_name = os.getenv("MONGO_COLLECTION")
-        collection_name = "earthquakes"
+        collection_name = os.getenv("MONGO_COLLECTION")
         collection = db[collection_name]
 
         # Récupération de la dernière date d'extraction
@@ -132,13 +129,9 @@ class LoadEarthquakes(luigi.Task):
         """Check de la sortie de l'ETL"""
 
         # Récupération des variables d'environnement
-        # mongo_client = MongoClient(os.getenv("MONGO_CLIENT"))
-        # db = os.getenv("MONGO_DATABASE")
-        # collection = os.getenv("MONGO_COLLECTION")
-
-        mongo_client = MongoClient("mongodb://localhost:27017/")
-        db = "earthquake_db"
-        collection = "earthquakes"
+        mongo_client = MongoClient(os.getenv("MONGO_CLIENT"))
+        db = os.getenv("MONGO_DATABASE")
+        collection = os.getenv("MONGO_COLLECTION")
 
         # Retourne un objet de l'instance MongoCollectionTarget
         return MongoCollectionTarget(mongo_client=mongo_client, index=db, collection=collection)
