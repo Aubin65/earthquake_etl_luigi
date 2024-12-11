@@ -12,7 +12,7 @@ Le projet est structuré suivant les répertoires suivants :
 * **images :**
     * Répertoire contenant les images à afficher dans le fichier README.md
 * **target :**
-    * Répertoire contenant le script d'import de la classe MongoTarget nécessaire à la lecture et au chargement des données
+    * Répertoire contenant les scripts d'import des classes MongoTarget et Buffer nécessaires à la lecture et au chargement des données
 * **workflows :**
     * Répertoire contenant les scripts de travail sur la donnée
 * **trigger :**
@@ -30,3 +30,6 @@ On a :
 * Une méthode ```requires``` qui va contenir la classe correspondant à la tâche précédante
 
 Pour la méthode ```output```, on utilise des *Targets* prédéfinies dans le dossier [target](https://github.com/Aubin65/earthquake_etl_luigi/tree/main/target).
+Comme décrit dans le partie Structure du projet, ce dossier contient deux types de target :
+* La target **MongoTarget** qui permet l'accès à une base de données MongoDB. Elle est basée sur la librairie [pymongo](https://pymongo.readthedocs.io/en/stable/index.html). On y a ajouté une méthode *bulk_insert* pour ajouter une liste de documents dans la base de données.
+* La target **Buffer** qui permet un stockage temporaire d'une liste et permet de transiter entre les différentes étapes d'extraction, de transformation et de stockage de la données. 
