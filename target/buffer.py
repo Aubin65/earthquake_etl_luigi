@@ -16,9 +16,9 @@ class Buffer(Target):
         """Renvoie les données du buffer"""
         return self.data
 
-    def is_empty(self):
+    def exists(self):
         """Test sur la présence d'enregistrements dans le buffer"""
-        return self.data == []
+        return self.data != []
 
     def put(self, dictionnary):
         """Chargement de données dans le buffer"""
