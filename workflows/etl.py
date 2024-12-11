@@ -4,15 +4,18 @@ Ce fichier est utilisé pour mettre en place l'ETL grâce à Apache Luigi
 
 # Import des librairies nécessaires
 import luigi
-from ..target.mongotarget import MongoCollectionTarget
-from ..target.buffer import Buffer
+from target.mongotarget import MongoCollectionTarget
+from target.buffer import Buffer
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
-import pymongo
+from pymongo import MongoClient
 import requests
 import pendulum
 from geopy.distance import geodesic
+
+# Ajout du chemin vers client.cfg
+luigi.configuration.LuigiConfigParser.add_config_path("../config/client.cfg")
 
 
 class ExtractEarthquakes(luigi.Task):
@@ -29,14 +32,17 @@ class ExtractEarthquakes(luigi.Task):
         load_dotenv()
 
         # Récupération du client
-        client = os.getenv("MONGO_CLIENT")
+        # client = MongoClient(os.getenv("MONGO_CLIENT"))
+        client = MongoClient("mongodb://localhost:27017/")
 
         # Récupération de la bdd
-        db_name = os.getenv("MONGO_DATABASE")
+        # db_name = os.getenv("MONGO_DATABASE")
+        db_name = "earthquake_db"
         db = client[db_name]
 
         # Récupération de la collection
-        collection_name = os.getenv("MONGO_COLLECTION")
+        # collection_name = os.getenv("MONGO_COLLECTION")
+        collection_name = "earthquakes"
         collection = db[collection_name]
 
         # Récupération de la dernière date d'extraction
@@ -57,10 +63,10 @@ class ExtractEarthquakes(luigi.Task):
         buffer = self.output()
 
         # Si on a de nouveaux enregistrements, on stocke le résultat de la requête dans notre Buffer
-        if buffer.is_empty():
-            raise ValueError("Validation échouée : aucun nouvel enregistrement n'a été détecté")
-        else:
+        if len(raw_data["features"]) > 0:
             return buffer.put(raw_data)
+        else:
+            raise ValueError("Validation échouée : aucun nouvel enregistrement n'a été détecté")
 
 
 class TransformEarthquakes(luigi.Task):
@@ -125,13 +131,23 @@ class LoadEarthquakes(luigi.Task):
     def output(self):
         """Check de la sortie de l'ETL"""
 
-        client = os.getenv("MONGO_CLIENT")
-        db = os.getenv("MONGO_DATABASE")
-        collection = os.getenv("MONGO_COLLECTION")
+        # Récupération des variables d'environnement
+        # mongo_client = MongoClient(os.getenv("MONGO_CLIENT"))
+        # db = os.getenv("MONGO_DATABASE")
+        # collection = os.getenv("MONGO_COLLECTION")
 
-        return MongoCollectionTarget(mongo_client=pymongo.MongoClient(client), index=db, collection=collection)
+        mongo_client = MongoClient("mongodb://localhost:27017/")
+        db = "earthquake_db"
+        collection = "earthquakes"
+
+        # Retourne un objet de l'instance MongoCollectionTarget
+        return MongoCollectionTarget(mongo_client=mongo_client, index=db, collection=collection)
 
     def run(self):
         """Fonction de chargement de l'ETL à partir des données transformées précédemment"""
 
         self.output().bulk_insert(self.input().get_data())
+
+
+if __name__ == "__main__":
+    luigi.run()
