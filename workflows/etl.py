@@ -142,6 +142,7 @@ class LoadEarthquakes(luigi.Task):
     def run(self):
         """Fonction de chargement de l'ETL à partir des données transformées précédemment"""
 
+        # On applique la méthode bulk_insert définie dans la classe MongoCollectionTarget
         self.output().bulk_insert(self.input().get_data())
 
 
