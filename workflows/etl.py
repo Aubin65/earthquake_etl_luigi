@@ -90,11 +90,13 @@ class TransformEarthquakes(luigi.Task):
         # Initialisation de la nouvelle variable de stockage temporaire
         buffer = self.output()
 
+        # Itération sur chaque enregistrement
         for feature in raw_data["features"]:
 
+            # Récupération des doordonnées du point pour pouvoir faire un calcul de distance
             point = (feature["geometry"]["coordinates"][1], feature["geometry"]["coordinates"][0])
 
-            # Création du dictionnaire temporaire
+            # Ajout du dictionnaire au buffer
             buffer.put(
                 {
                     "mag": feature["properties"]["mag"],
@@ -102,14 +104,12 @@ class TransformEarthquakes(luigi.Task):
                     "date": datetime.fromtimestamp(feature["properties"]["time"] / 1000, timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%S"
                     ),
-                    # "time": feature["properties"]["time"],
                     "type": feature["properties"]["type"],
                     "nst": feature["properties"]["nst"],
                     "dmin": feature["properties"]["dmin"],
                     "sig": feature["properties"]["sig"],
                     "magType": feature["properties"]["magType"],
                     "geometryType": feature["geometry"]["type"],
-                    # "coordinates": feature["geometry"]["coordinates"],
                     "longitude": point[1],
                     "latitude": point[0],
                     "depth": feature["geometry"]["coordinates"][2],
