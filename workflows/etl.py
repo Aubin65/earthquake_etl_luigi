@@ -128,6 +128,9 @@ class LoadEarthquakes(luigi.Task):
     def output(self):
         """Check de la sortie de l'ETL"""
 
+        # Rechargement des variables d'environnement
+        load_dotenv()
+
         # Récupération des variables d'environnement
         mongo_client = MongoClient(os.getenv("MONGO_CLIENT"))
         db = os.getenv("MONGO_DATABASE")
